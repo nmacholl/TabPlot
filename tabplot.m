@@ -18,9 +18,11 @@ function [a, t, g] = tabplot(numTabs, varargin)
     addOptional(ip, 'Title', {}, @iscell);
     addOptional(ip, 'TabLocation', 'top', @ischar);
     parse(ip, numTabs, varargin{:});
+    assert(numTabs>0 && rem(numTabs,1) == 0, 'Number of tabs must be a positive integer.');
     if ~isempty(ip.Results.Title)
         assert(all(cellfun(@ischar, ip.Results.Title)), 'Titles must be character arrays.');
     end
+    assert(any(strcmpi(ip.Results.TabLocation, {'top', 'bottom', 'left', 'right'})), sprintf('Tab location ''%s'' is not a valid location.', ip.Results.TabLocation));
     if isempty(gcf)
         fig = figure(); 
     else
