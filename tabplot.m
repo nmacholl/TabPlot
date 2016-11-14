@@ -17,12 +17,14 @@ function [a, t, g] = tabplot(numTabs, varargin)
     addRequired(ip, 'numTabs', @isnumeric);
     addOptional(ip, 'Title', {}, @iscell);
     addOptional(ip, 'TabLocation', 'top', @ischar);
+    addOptional(ip, 'CreateAxes', 'on', @ischar);
     parse(ip, numTabs, varargin{:});
     assert(numTabs>0 && rem(numTabs,1) == 0, 'Number of tabs must be a positive integer.');
     if ~isempty(ip.Results.Title)
         assert(all(cellfun(@ischar, ip.Results.Title)), 'Titles must be character arrays.');
     end
     assert(any(strcmpi(ip.Results.TabLocation, {'top', 'bottom', 'left', 'right'})), sprintf('Tab location ''%s'' is not a valid location.', ip.Results.TabLocation));
+    assert(any(strcmpi(ip.Results.CreateAxes, {'on', 'off'})), sprintf('CreateAxes can be set to either on or off.'));
     if isempty(gcf)
         fig = figure(); 
     else
@@ -38,10 +40,18 @@ function [a, t, g] = tabplot(numTabs, varargin)
     for k = 1:numTabs
         t(k) = uitab('Parent', g,...
                      'Title', sprintf('axes_%d', k));
-        a(k) = axes('Parent', t(k));
+        if strcmpi(ip.Results.CreateAxes, 'on')
+            a(k) = axes('Parent', t(k));
+        else
+            a(k) = NaN;
+        end
         if isfield(ip.Results, 'Title') && k <= numel(ip.Results.Title)
             set(t(k), 'Title', ip.Results.Title{k}); 
         end
     end
-    axes(a(1));
+    if strcmpi(ip.Results.CreateAxes, 'on')
+        axes(a(start));
+    else
+        a = []; 
+    end
 end
