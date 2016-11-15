@@ -12,6 +12,9 @@ function [a, t, g] = tabplot(numTabs, varargin)
 %   a new figure, and places an axes in each tab. The tabs will be
 %   positioned in the tabgroup location named by s; such as top, left,
 %   bottom, or right.
+%   TABPLOT(m, 'CreateAxes', 'off'), creates m tabs in the current figure, or
+%   a new figure, but does not create an axes in each tab. The empty array
+%   will be returned in the first argument if CreateAxes is set to off.
     
     ip = inputParser;
     addRequired(ip, 'numTabs', @isnumeric);
